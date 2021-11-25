@@ -8,6 +8,8 @@ import 'package:alura_crashlytics/models/contact.dart';
 import 'package:alura_crashlytics/models/transaction.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
+import 'package:giffy_dialog/giffy_dialog.dart';
+import 'package:toast/toast.dart';
 import 'package:uuid/uuid.dart';
 
 class TransactionForm extends StatefulWidget {
@@ -145,6 +147,7 @@ class _TransactionFormState extends State<TransactionForm> {
 
         FirebaseCrashlytics.instance.recordError(e, null);
       }
+
       _showFailureMessage(context, message: e.message);
     }, test: (e) => e is HttpException).catchError((e) {
       if (FirebaseCrashlytics.instance.isCrashlyticsCollectionEnabled) {
@@ -167,7 +170,6 @@ class _TransactionFormState extends State<TransactionForm> {
 
         FirebaseCrashlytics.instance.recordError(e, null);
       }
-
       _showFailureMessage(context);
     }).whenComplete(() {
       setState(() {
@@ -182,9 +184,28 @@ class _TransactionFormState extends State<TransactionForm> {
     String message = 'Unknown error',
   }) {
     showDialog(
-        context: context,
-        builder: (contextDialog) {
-          return FailureDialog(message);
-        });
+  context: context,builder: (_) => NetworkGiffyDialog(
+    image: Image.network("https://raw.githubusercontent.com/Shashank02051997/FancyGifDialog-Android/master/GIF's/gif14.gif"),
+    title: Text('Granny Eating Chocolate',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+            fontSize: 22.0,
+            fontWeight: FontWeight.w600)),
+    description:Text('This is a granny eating chocolate dialog box.This library helps you easily create fancy giffy dialog',
+          textAlign: TextAlign.center,
+        ),
+    entryAnimation: EntryAnimation.BOTTOM,
+    onOkButtonPressed: () {},
+  ) );
+    // showToast(message, gravity: Toast.BOTTOM);
+    // showDialog(
+    //     context: context,
+    //     builder: (contextDialog) {
+    //       return FailureDialog(message);
+    //     });
+  }
+
+  void showToast(String msg, {int duration = 5, int gravity}) {
+    Toast.show(msg, context, duration: duration, gravity: gravity);
   }
 }
